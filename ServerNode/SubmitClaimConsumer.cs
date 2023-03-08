@@ -4,18 +4,13 @@ namespace ServerNode
     using System.Threading.Tasks;
     using Common;
     using MassTransit;
-    using Microsoft.Extensions.Logging;
 
     public class SubmitClaimConsumer : IConsumer<SubmitClaim>
     {
-        private readonly IPublishEndpoint _publishEndpoint;
-
         private readonly ISendEndpointProvider _sendEndpointProvider;
 
-        public SubmitClaimConsumer(IPublishEndpoint publishEndpoint,
-        ISendEndpointProvider sendEndpointProvider)
+        public SubmitClaimConsumer(ISendEndpointProvider sendEndpointProvider)
         {
-            _publishEndpoint = publishEndpoint;
             _sendEndpointProvider = sendEndpointProvider;
         }
 
@@ -32,19 +27,21 @@ namespace ServerNode
 
     public class SubmitClaimJobConsumer : IConsumer<SubmitJobClaim>
     {
-        readonly ILogger<SubmitJobClaim> _logger;
+        private readonly ISendEndpointProvider _sendEndpointProvider;
 
-        public SubmitClaimJobConsumer(ILogger<SubmitJobClaim> logger)
+        public SubmitClaimJobConsumer(ISendEndpointProvider sendEndpointProvider)
         {
-            _logger = logger;
+            _sendEndpointProvider = sendEndpointProvider;
         }
 
-        public Task Consume(ConsumeContext<SubmitJobClaim> context)
+        public async Task Consume(ConsumeContext<SubmitJobClaim> context)
         {
-            var message = context.Message;
-            _logger.LogInformation("Job Claim Submitted (WorkerNode): {content} {ResponseAddress} - {SourceAddress}", message.Content, context.ResponseAddress, context.SourceAddress);
+            LogContext.Info?.Log("Consuming (JobNode): {Index}/{Count} {ClaimId} {SourceAddress}", context.Message.Index, context.Message.Count,
+                context.Message.Content, context.SourceAddress);
 
-            return Task.CompletedTask;
+            var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:response-node"));
+
+            await endpoint.Send(new ClaimSubmitted { Content = "response: " + context.Message.Content + "|" + context.Message.Index });
         }
     }
 }

@@ -17,7 +17,7 @@ namespace ClientNode
         public Task Consume(ConsumeContext<ClaimSubmitted> context)
         {
             var message = context.Message;
-            _logger.LogInformation("Claim Submitted (WorkerNode): {content} {ResponseAddress} - {SourceAddress}", message.Content, context.ResponseAddress, context.SourceAddress);
+            _logger.LogInformation("Claim Submitted: {content} {ResponseAddress} - {SourceAddress}", message.Content, context.ResponseAddress, context.SourceAddress);
 
             return Task.CompletedTask;
         }

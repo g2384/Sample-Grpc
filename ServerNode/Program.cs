@@ -30,16 +30,16 @@ namespace ServerNode
                 {
                     services.AddMassTransit(x =>
                     {
-                        //x.AddDelayedMessageScheduler();
+                        x.AddDelayedMessageScheduler();
 
                         x.AddConsumer<SubmitClaimConsumer>();
 
-                        //x.AddConsumer<SubmitClaimJobConsumer>()
-                        //    .Endpoint(e => e.Name = "job-node");
+                        x.AddConsumer<SubmitClaimJobConsumer>()
+                            .Endpoint(e => e.Name = "job-node");
 
-                        //x.AddSagaRepository<JobSaga>().InMemoryRepository();
-                        //x.AddSagaRepository<JobTypeSaga>().InMemoryRepository();
-                        //x.AddSagaRepository<JobAttemptSaga>().InMemoryRepository();
+                        x.AddSagaRepository<JobSaga>().InMemoryRepository();
+                        x.AddSagaRepository<JobTypeSaga>().InMemoryRepository();
+                        x.AddSagaRepository<JobAttemptSaga>().InMemoryRepository();
 
                         // clients
                         x.UsingGrpc((context, cfg) =>
@@ -54,23 +54,23 @@ namespace ServerNode
                                     h.AddServer(host);
                             });
 
-                            //cfg.UseDelayedMessageScheduler();
+                            cfg.UseDelayedMessageScheduler();
 
-                            //var options = new ServiceInstanceOptions();
+                            var options = new ServiceInstanceOptions();
 
-                            //cfg.ServiceInstance(options, instance =>
-                            //{
-                            //    instance.ConfigureJobServiceEndpoints(js =>
-                            //    {
-                            //        js.SagaPartitionCount = 1;
-                            //        js.FinalizeCompleted = false; // for demo purposes, to get state
+                            cfg.ServiceInstance(options, instance =>
+                            {
+                                instance.ConfigureJobServiceEndpoints(js =>
+                                {
+                                    js.SagaPartitionCount = 1;
+                                    js.FinalizeCompleted = false; // for demo purposes, to get state
 
-                            //        js.ConfigureSagaRepositories(context);
-                            //    });
+                                    js.ConfigureSagaRepositories(context);
+                                });
 
-                            //    // configure the job consumer on the job service endpoints
-                            //    instance.ConfigureEndpoints(context, f => f.Include<SubmitClaimJobConsumer>());
-                            //});
+                                // configure the job consumer on the job service endpoints
+                                instance.ConfigureEndpoints(context, f => f.Include<SubmitClaimJobConsumer>());
+                            });
 
                             cfg.ReceiveEndpoint("worker-node",
                                 e =>

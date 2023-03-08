@@ -25,6 +25,8 @@ namespace ClientNode
 
             IRequestClient<SubmitClaim> client = _bus.CreateRequestClient<SubmitClaim>();
 
+            await Task.Delay(1000); // waiting for the queue setup
+
             const int total = 10;
 
             var sender = await _bus.GetSendEndpoint(new Uri("queue:worker-node"));
@@ -35,7 +37,7 @@ namespace ClientNode
 
                 await sender.Send(new SubmitClaim
                 {
-                    Content = NewId.NextGuid().ToString() + "WorkNode",
+                    Content = $"WorkNode_{NewId.NextGuid().ToString()}",
                     Index = i + 1,
                     Count = total
                 }, new CancellationToken());
@@ -47,9 +49,9 @@ namespace ClientNode
             {
                 await Task.Delay(200, stoppingToken);
 
-                await sender2.Send(new SubmitClaim
+                await sender2.Send(new SubmitJobClaim
                 {
-                    Content = NewId.NextGuid().ToString() + "JobNode",
+                    Content = $"JobNode_{NewId.NextGuid().ToString()}",
                     Index = i + 1,
                     Count = total
                 }, new CancellationToken());
