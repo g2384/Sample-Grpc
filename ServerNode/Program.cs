@@ -45,13 +45,9 @@ namespace GrpcNode2
                                     h.AddServer(host);
                             });
 
-                            //                            if (string.IsNullOrWhiteSpace(options.Value.Servers))
-                            //cfg.ConfigureEndpoints(context, filter => filter.Include<SubmitClaimConsumer>());
-
                             cfg.ReceiveEndpoint("worker-node",
                                 e =>
                                 {
-                                    //SetResiliencyRules(e, configuration);
                                     e.ConfigureConsumer<SubmitClaimConsumer>(context, config => { });
                                 });
                         });
@@ -66,11 +62,5 @@ namespace GrpcNode2
                         });
                 });
         }
-    }
-
-
-    public interface ISecondBus :
-        IBus
-    {
     }
 }
