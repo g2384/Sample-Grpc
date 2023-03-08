@@ -53,8 +53,6 @@ namespace ServerNode
                         });
                     });
 
-                    services.AddHostedService<ClaimSubmissionService>();
-
                     services.AddOptions<StartupOptions>()
                         .Configure<IConfiguration>((options, config) =>
                         {
