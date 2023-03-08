@@ -30,7 +30,16 @@ namespace ServerNode
                 {
                     services.AddMassTransit(x =>
                     {
+                        //x.AddDelayedMessageScheduler();
+
                         x.AddConsumer<SubmitClaimConsumer>();
+
+                        //x.AddConsumer<SubmitClaimJobConsumer>()
+                        //    .Endpoint(e => e.Name = "job-node");
+
+                        //x.AddSagaRepository<JobSaga>().InMemoryRepository();
+                        //x.AddSagaRepository<JobTypeSaga>().InMemoryRepository();
+                        //x.AddSagaRepository<JobAttemptSaga>().InMemoryRepository();
 
                         // clients
                         x.UsingGrpc((context, cfg) =>
@@ -44,6 +53,24 @@ namespace ServerNode
                                 foreach (var host in new[] { new Uri("http://127.0.0.1:19796/") })
                                     h.AddServer(host);
                             });
+
+                            //cfg.UseDelayedMessageScheduler();
+
+                            //var options = new ServiceInstanceOptions();
+
+                            //cfg.ServiceInstance(options, instance =>
+                            //{
+                            //    instance.ConfigureJobServiceEndpoints(js =>
+                            //    {
+                            //        js.SagaPartitionCount = 1;
+                            //        js.FinalizeCompleted = false; // for demo purposes, to get state
+
+                            //        js.ConfigureSagaRepositories(context);
+                            //    });
+
+                            //    // configure the job consumer on the job service endpoints
+                            //    instance.ConfigureEndpoints(context, f => f.Include<SubmitClaimJobConsumer>());
+                            //});
 
                             cfg.ReceiveEndpoint("worker-node",
                                 e =>

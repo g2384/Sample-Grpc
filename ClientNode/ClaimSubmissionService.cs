@@ -1,19 +1,14 @@
 namespace ClientNode
 {
     using System;
-    using System.Diagnostics;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Common;
     using MassTransit;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
 
-
-    public class ClaimSubmissionService :
-        BackgroundService
+    public class ClaimSubmissionService : BackgroundService
     {
         readonly IBusControl _bus;
         readonly ILogger<ClaimSubmissionService> _logger;
@@ -41,6 +36,20 @@ namespace ClientNode
                 await sender.Send(new SubmitClaim
                 {
                     Content = NewId.NextGuid().ToString() + "WorkNode",
+                    Index = i + 1,
+                    Count = total
+                }, new CancellationToken());
+            }
+
+            var sender2 = await _bus.GetSendEndpoint(new Uri("queue:job-node"));
+
+            for (var i = 0; i < total; i++)
+            {
+                await Task.Delay(200, stoppingToken);
+
+                await sender2.Send(new SubmitClaim
+                {
+                    Content = NewId.NextGuid().ToString() + "JobNode",
                     Index = i + 1,
                     Count = total
                 }, new CancellationToken());

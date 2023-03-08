@@ -6,8 +6,7 @@ namespace ServerNode
     using MassTransit;
     using Microsoft.Extensions.Logging;
 
-    public class SubmitClaimConsumer :
-        IConsumer<SubmitClaim>
+    public class SubmitClaimConsumer : IConsumer<SubmitClaim>
     {
         private readonly IPublishEndpoint _publishEndpoint;
 
@@ -31,19 +30,19 @@ namespace ServerNode
         }
     }
 
-    public class ResponseConsumer : IConsumer<ClaimSubmitted>
+    public class SubmitClaimJobConsumer : IConsumer<SubmitJobClaim>
     {
-        readonly ILogger<ClaimSubmitted> _logger;
+        readonly ILogger<SubmitJobClaim> _logger;
 
-        public ResponseConsumer(ILogger<ClaimSubmitted> logger)
+        public SubmitClaimJobConsumer(ILogger<SubmitJobClaim> logger)
         {
             _logger = logger;
         }
 
-        public Task Consume(ConsumeContext<ClaimSubmitted> context)
+        public Task Consume(ConsumeContext<SubmitJobClaim> context)
         {
             var message = context.Message;
-            _logger.LogInformation("Claim Submitted (WorkerNode): {content} {ResponseAddress} - {SourceAddress}", message.Content, context.ResponseAddress, context.SourceAddress);
+            _logger.LogInformation("Job Claim Submitted (WorkerNode): {content} {ResponseAddress} - {SourceAddress}", message.Content, context.ResponseAddress, context.SourceAddress);
 
             return Task.CompletedTask;
         }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -14,10 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Contracts\" />
   </ItemGroup>
 
 </Project>
