@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorkerNode", "WorkerNode\WorkerNode.csproj", "{C114694D-3B2B-44D9-A4DF-225D8ED0C057}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerNode", "ServerNode\ServerNode.csproj", "{C114694D-3B2B-44D9-A4DF-225D8ED0C057}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrpcNode2", "GrpcNode2\GrpcNode2.csproj", "{34B5914D-A59E-410C-BD03-6E550604ED44}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientNode", "ClientNode\ClientNode.csproj", "{34B5914D-A59E-410C-BD03-6E550604ED44}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{0A19D380-96DE-446D-A6E7-38E7FAED7DD3}"
 EndProject
