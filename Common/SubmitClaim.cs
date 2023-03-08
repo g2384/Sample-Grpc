@@ -1,12 +1,13 @@
-namespace Contracts
+namespace Common
 {
     using System;
 
 
     public record SubmitClaim
     {
-        public string Content { get; init; }
+        public Guid ClaimId { get; init; }
         public int Index { get; init; }
         public int Count { get; init; }
+        public string Content { get; init; }
     }
 }

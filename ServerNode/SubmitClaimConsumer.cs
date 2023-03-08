@@ -1,8 +1,8 @@
-namespace GrpcNode2
+namespace ServerNode
 {
     using System;
     using System.Threading.Tasks;
-    using Contracts;
+    using Common;
     using MassTransit;
     using Microsoft.Extensions.Logging;
 

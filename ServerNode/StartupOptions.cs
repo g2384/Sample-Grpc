@@ -1,4 +1,4 @@
-namespace GrpcNode2
+namespace ServerNode
 {
     using System;
     using System.Collections.Generic;

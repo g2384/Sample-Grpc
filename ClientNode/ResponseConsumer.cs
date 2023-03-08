@@ -1,7 +1,7 @@
-namespace GrpcNode2
+namespace ClientNode
 {
     using System.Threading.Tasks;
-    using Contracts;
+    using Common;
     using MassTransit;
     using Microsoft.Extensions.Logging;
 

@@ -1,4 +1,4 @@
-namespace GrpcNode2
+namespace ClientNode
 {
     using System;
     using System.Threading.Tasks;
