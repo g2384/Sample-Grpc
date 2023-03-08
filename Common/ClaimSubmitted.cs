@@ -5,7 +5,6 @@ namespace Contracts
 
     public record ClaimSubmitted
     {
-        public Guid ClaimId { get; init; }
         public string Content { get; init; }
     }
 }

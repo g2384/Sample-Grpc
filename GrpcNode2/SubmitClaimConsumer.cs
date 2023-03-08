@@ -1,13 +1,14 @@
 namespace GrpcNode2
 {
     using System;
+    using System.Collections.Concurrent;
+    using System.Linq;
     using System.Threading.Tasks;
     using Contracts;
     using MassTransit;
     using Microsoft.Extensions.Logging;
 
-    public class SubmitClaimConsumer :
-        IConsumer<SubmitClaim>
+    public class SubmitClaimConsumer : IConsumer<SubmitClaim>
     {
         private readonly IPublishEndpoint _publishEndpoint;
 
@@ -22,7 +23,7 @@ namespace GrpcNode2
 
         public async Task Consume(ConsumeContext<SubmitClaim> context)
         {
-            LogContext.Info?.Log("Consuming (WorkerNode): {Index}/{Count} {ClaimId} {SourceAddress}", context.Message.Index, context.Message.Count,
+            LogContext.Info?.Log("Consuming (GrpcNode2): {Index}/{Count} {ClaimId} {SourceAddress}", context.Message.Index, context.Message.Count,
                 context.Message.Content, context.SourceAddress);
 
             var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:response-node"));

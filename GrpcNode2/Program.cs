@@ -30,34 +30,50 @@ namespace GrpcNode2
                 {
                     services.AddMassTransit(x =>
                     {
-                        x.AddConsumer<SubmitClaimConsumer>();
+                        //x.AddConsumer<SubmitClaimConsumer>();
+                        x.AddConsumer<ResponseConsumer>();
 
-                        // clients
+                        // server
                         x.UsingGrpc((context, cfg) =>
                         {
                             cfg.Host(h =>
                             {
                                 h.Host = "localhost";
 
-                                h.Port = 19797;
+                                h.Port = 19796;
 
-                                foreach (var host in new[] { new Uri("http://127.0.0.1:19796/") })
-                                    h.AddServer(host);
+                                // foreach (var host in new[] { new Uri("http://127.0.0.1:19796/") })
+                                //     h.AddServer(host);
                             });
 
                             //                            if (string.IsNullOrWhiteSpace(options.Value.Servers))
                             //cfg.ConfigureEndpoints(context, filter => filter.Include<SubmitClaimConsumer>());
-
-                            cfg.ReceiveEndpoint("worker-node",
+                            cfg.ReceiveEndpoint("response-node",
                                 e =>
                                 {
                                     //SetResiliencyRules(e, configuration);
-                                    e.ConfigureConsumer<SubmitClaimConsumer>(context, config => { });
+                                    e.ConfigureConsumer<ResponseConsumer>(context, config => { });
                                 });
                         });
                     });
 
-                    services.AddHostedService<ClaimSubmissionService>();
+                    //services.AddMassTransit<ISecondBus>(x =>
+                    //{
+                    //    // server
+                    //    x.UsingGrpc((context, cfg) =>
+                    //    {
+                    //        cfg.Host(h =>
+                    //        {
+                    //            h.Host = "localhost";
+
+                    //            h.Port = 19796 + 10000;
+
+                    //            h.AddServer(new Uri("http://127.0.0.1:19796"));
+                    //        });
+                    //    });
+                    //});
+
+                    //services.AddHostedService<ClaimSubmissionService>();
 
                     services.AddOptions<StartupOptions>()
                         .Configure<IConfiguration>((options, config) =>
@@ -69,8 +85,6 @@ namespace GrpcNode2
     }
 
 
-    public interface ISecondBus :
-        IBus
-    {
-    }
+    public interface ISecondBus : IBus
+    { }
 }

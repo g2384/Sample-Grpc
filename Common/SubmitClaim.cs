@@ -5,9 +5,8 @@ namespace Contracts
 
     public record SubmitClaim
     {
-        public Guid ClaimId { get; init; }
+        public string Content { get; init; }
         public int Index { get; init; }
         public int Count { get; init; }
-        public string Content { get; init; }
     }
 }
