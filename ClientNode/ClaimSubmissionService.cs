@@ -1,6 +1,7 @@
 namespace ClientNode
 {
     using System;
+    using System.Security.Claims;
     using System.Threading;
     using System.Threading.Tasks;
     using Common;
@@ -27,7 +28,7 @@ namespace ClientNode
 
             await Task.Delay(1000); // waiting for the queue setup
 
-            const int total = 10;
+            const int total = 2;
 
             var sender = await _bus.GetSendEndpoint(new Uri("queue:worker-node"));
 
@@ -35,26 +36,30 @@ namespace ClientNode
             {
                 await Task.Delay(200, stoppingToken);
 
-                await sender.Send(new SubmitClaim
+                var claim = new SubmitClaim
                 {
-                    Content = $"WorkNode_{NewId.NextGuid().ToString()}",
+                    Content = $"WorkNode_{NewId.NextGuid()}",
                     Index = i + 1,
                     Count = total
-                }, new CancellationToken());
+                };
+                await sender.Send(claim, new CancellationToken());
+
+                _logger.LogInformation("Work submitted: {Content} {Index}/{Count}", claim.Content, claim.Index, claim.Count);
             }
-
             var sender2 = await _bus.GetSendEndpoint(new Uri("queue:job-node"));
-
             for (var i = 0; i < total; i++)
             {
                 await Task.Delay(200, stoppingToken);
 
-                await sender2.Send(new SubmitJobClaim
+                var claim = new SubmitJobClaim
                 {
-                    Content = $"JobNode_{NewId.NextGuid().ToString()}",
+                    Content = $"JobNode_{NewId.NextGuid()}",
                     Index = i + 1,
                     Count = total
-                }, new CancellationToken());
+                };
+                await sender2.Send(claim, new CancellationToken());
+
+                _logger.LogInformation("Job submitted: {Content} {Index}/{Count}", claim.Content, claim.Index, claim.Count);
             }
             return;
         }

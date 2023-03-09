@@ -21,11 +21,16 @@ namespace ServerNode
 
             var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:response-node"));
 
-            await endpoint.Send(new ClaimSubmitted { Content = "response: " + context.Message.Content + "|" + context.Message.Index });
+            await endpoint.Send(new ClaimSubmitted {
+                Content = "response: " + context.Message.Content,
+                Count = context.Message.Count,
+                Index = context.Message.Index,
+                ClaimId = context.Message.ClaimId
+            });
         }
     }
 
-    public class SubmitClaimJobConsumer : IConsumer<SubmitJobClaim>
+    public class SubmitClaimJobConsumer : IJobConsumer<SubmitJobClaim>
     {
         private readonly ISendEndpointProvider _sendEndpointProvider;
 
@@ -34,14 +39,20 @@ namespace ServerNode
             _sendEndpointProvider = sendEndpointProvider;
         }
 
-        public async Task Consume(ConsumeContext<SubmitJobClaim> context)
+        public async Task Run(JobContext<SubmitJobClaim> context)
         {
-            LogContext.Info?.Log("Consuming (JobNode): {Index}/{Count} {ClaimId} {SourceAddress}", context.Message.Index, context.Message.Count,
-                context.Message.Content, context.SourceAddress);
+            LogContext.Info?.Log("Consuming (JobNode): {Index}/{Count} {ClaimId} {SourceAddress}", context.Job.Index, context.Job.Count,
+                context.Job.Content, context.SourceAddress);
 
             var endpoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:response-node"));
 
-            await endpoint.Send(new ClaimSubmitted { Content = "response: " + context.Message.Content + "|" + context.Message.Index });
+            await endpoint.Send(new ClaimSubmitted
+            {
+                Content = "response: " + context.Job.Content,
+                Count = context.Job.Count,
+                Index = context.Job.Index,
+                ClaimId = context.Job.ClaimId
+            });
         }
     }
 }
